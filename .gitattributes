@@ -1,0 +1,13 @@
+# 设置自动规范行结束符为 LF
+* text=auto
+
+# 确保所有文件在签出时使用 CRLF，在提交时转换为 LF
+*.cs text eol=crlf
+*.xaml text eol=crlf
+*.sln text eol=crlf
+*.csproj text eol=crlf
+*.json text eol=crlf
+*.xml text eol=crlf
+*.html text eol=crlf
+*.js text eol=crlf
+*.css text eol=crlf

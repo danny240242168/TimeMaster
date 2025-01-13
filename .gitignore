@@ -1,0 +1,55 @@
+## 忽略 Visual Studio 的临时文件和编译产物 ##
+
+# 用户特定文件
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# 编译输出
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa]ny[Cc]pu/
+[Bb]in/
+[Oo]bj/
+
+# Visual Studio 代码覆盖结果
+*.coverage
+*.coveragexml
+
+# 包文件
+*.nupkg
+# 包存储文件夹
+!**/packages/*
+**/[Pp]ackages/*
+**/[Pp]ackages/*.[Cc]ache
+
+# VSIX 项目输出文件夹
+*.vsix
+
+# ReSharper - ReSharper 是一个 Visual Studio 的插件
+_ReSharper*/
+*.[Rr]e[Ss]harper
+
+# TeamCity - TeamCity 是一个持续集成服务
+_TeamCity*
+
+# Visual Studio 2017+ cache/options directory
+.vs/
+
+# Windows image file caches
+Thumbs.db
+
+# Installer logs
+*.log
+
+# 文件夹 .vscode - VS Code 编辑器配置文件夹
+.vscode/
+
+# Windows Shortcuts
+*.lnk
+
+# node_modules 文件夹
+node_modules/
