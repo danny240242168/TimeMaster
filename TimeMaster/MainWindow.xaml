@@ -3,10 +3,18 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TimeMaster"
-        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        xmlns:local="clr-namespace:TimeMaster"    
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+    mc:Ignorable="d"
+        Title="TimeMaster" Height="450" Width="800">
+    <!-- 設定窗口的標題、高度和寬度 -->
+
+    <Window.Resources>
+        <!-- 定義轉換器，用於任務完成狀態的顏色轉換和文本顯示 -->
+        <local:TaskCompletionColorConverter x:Key="TaskCompletionColorConverter"/>
+        <local:CompletionStatusConverter x:Key="CompletionStatusConverter"/>
+    </Window.Resources>
+
     <Viewbox Stretch="Uniform">
         <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
             <Grid.RowDefinitions>
@@ -18,15 +26,15 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <!-- 任務名稱 -->
+            <!-- 任務名稱輸入 -->
             <TextBlock Text="輸入任務名稱:" Grid.Row="0" Margin="144,10,10,10"/>
             <TextBox x:Name="TitleTextBox" Grid.Row="0" Grid.Column="1" Margin="10" Width="200"/>
 
-            <!-- 任務描述 -->
+            <!-- 任務描述輸入 -->
             <TextBlock Text="輸入任務描述:" Grid.Row="1" Margin="144,10,10,10"/>
             <TextBox x:Name="DescriptionTextBox" Grid.Row="1" Grid.Column="1" Margin="10" Width="200"/>
 
-            <!-- 開始時間 -->
+            <!-- 設定開始時間 -->
             <TextBlock Text="設定開始時間:" Grid.Row="2" Margin="144,10,10,10"/>
             <xctk:DateTimePicker x:Name="StartTimePicker"
                                  Grid.Row="2" Grid.Column="1" Margin="10" Width="200"
@@ -34,14 +42,15 @@
                                  FormatString="yyyy/MM/dd HH:mm"
                                  ValueChanged="StartTimePicker_ValueChanged"/>
 
-            <!-- 結束時間 -->
+            <!-- 設定結束時間 -->
             <TextBlock Text="設定結束時間:" Grid.Row="3" Margin="144,10,10,10"/>
             <xctk:DateTimePicker x:Name="EndTimePicker"
                                  Grid.Row="3" Grid.Column="1" Margin="10" Width="200"
                                  Format="Custom"
                                  FormatString="yyyy/MM/dd HH:mm"
                                  ValueChanged="EndTimePicker_ValueChanged"/>
-            <!-- 提醒時間 -->
+
+            <!-- 選擇提醒時間 -->
             <TextBlock Text="選擇提醒時間:" Grid.Row="4" Grid.Column="0" Margin="144,10,10,10"/>
             <ComboBox x:Name="ReminderTimeComboBox" Grid.Row="4" Grid.Column="1" Margin="10" Width="200">
                 <ComboBox.ItemTemplate>
@@ -56,24 +65,66 @@
                 <ComboBoxItem Content="1 天"/>
             </ComboBox>
 
-            <!-- 新增任務按鈕 -->
-            <!--<Button Content="新增任務" Grid.Row="4" HorizontalAlignment="Left" Margin="520,10,0,10" Width="100" Click="AddTaskButton_Click"/>-->
+            <!-- 新增任務和刪除任務按鈕 -->
             <StackPanel Grid.Row="4" HorizontalAlignment="Left" Margin="520,10,0,10" Orientation="Horizontal">
                 <Button Content="新增任務" Width="100" Click="AddTaskButton_Click"/>
                 <Button Content="刪除任務" Width="100" Margin="10,0,0,0" Click="DeleteTaskButton_Click"/>
             </StackPanel>
 
-            <!-- 任務列表 -->
+            <!-- 任務列表展示 -->
             <ListBox x:Name="TaskListBox" Grid.Row="5" Margin="10" Width="760" Height="200" ItemsSource="{Binding Tasks}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel>
-                            <TextBlock Text="{Binding Title}" FontWeight="Bold"/>
-                            <TextBlock Text="{Binding Description}" FontStyle="Italic"/>
-                        </StackPanel>
+                        <Grid Margin="10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <!-- 標題 -->
+                                <RowDefinition Height="Auto"/>
+                                <!-- 描述 -->
+                                <RowDefinition Height="Auto"/>
+                                <!-- 狀態 -->
+                                <RowDefinition Height="Auto"/>
+                                <!-- 按鈕 -->
+                            </Grid.RowDefinitions>
+
+                            <!-- 標題 -->
+                            <TextBlock Text="{Binding Title}" FontWeight="Bold" Grid.Row="0" TextAlignment="Left" FontSize="20"/>
+
+                            <!-- 描述 -->
+                            <TextBlock Text="{Binding Description}" FontStyle="Normal" Grid.Row="1" TextAlignment="Left"/>
+
+                            <!-- 任務狀態顯示 -->
+                            <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Right" Margin="0,5,0,0">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <!-- 狀態欄位，動態調整 -->
+                                        <ColumnDefinition Width="*"/>
+                                        <!-- 按鈕欄位，動態寬度 -->
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- 任務狀態 -->
+                                    <TextBlock Text="{Binding IsCompleted, Converter={StaticResource CompletionStatusConverter}}" 
+                                     Foreground="{Binding IsCompleted, Converter={StaticResource TaskCompletionColorConverter}}" 
+                                     Grid.Column="0" Margin="530,0,10,0" VerticalAlignment="Center"/>
+
+                                    <!-- 按鈕容器 -->
+                                    <StackPanel Orientation="Horizontal" Grid.Column="1">
+                                        <!-- 完成按鈕 -->
+                                        <Button Content="完成" Width="60" Margin="0,0,5,0" Click="CompleteTask_Click" CommandParameter="{Binding}"/>
+
+                                        <!-- 未完成按鈕 -->
+                                        <Button Content="未完成" Width="60" Margin="5,0,0,0" Click="UncompleteTask_Click" CommandParameter="{Binding}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+
+                        </Grid>
+
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
+
         </Grid>
     </Viewbox>
 </Window>

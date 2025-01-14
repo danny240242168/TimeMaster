@@ -4,6 +4,8 @@
              xmlns:local="clr-namespace:TimeMaster"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <ResourceDictionary>
+        </ResourceDictionary>
     </Application.Resources>
+
 </Application>
